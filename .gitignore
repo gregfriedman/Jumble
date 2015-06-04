@@ -61,7 +61,7 @@ node_modules
 *.ipr
 *.iws
 
-## Plugin-specific files:
+##  Plugin-specific files:
 
 # IntelliJ
 out/
