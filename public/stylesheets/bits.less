@@ -1,0 +1,17 @@
+@text-color: #0f0f0f;
+@separator-color: #b90101;
+@link-color: @separator-color;
+
+@header-font: 'Proxima N W01 Thin Reg', Arial, sans-serif;
+@body-font: 'Soho W01 Light', serif;
+
+
+.breakpoint(@point, @rules) when (@point = medium) {
+    @media (min-width: 540px) { @rules(); }
+}
+  
+ /*
+ @if $point == big {
+	  @media (min-width: 1024px) { @content; }
+  }
+*/

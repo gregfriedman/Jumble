@@ -1,0 +1,109 @@
+doctype html
+html
+	head
+		title Puzzle Demo by Greg Friedman
+		meta(http-equiv='content-type', content='text/html;charset=utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		link(rel='stylesheet', href='/stylesheets/global.css?v=2015.04.01.1637')
+		link(rel="stylesheet" href='/stylesheets/animate.css')
+		link(type='text/css', rel='stylesheet', href='http://fast.fonts.com/cssapi/a1381365-3b76-418d-be06-6dd8913d422c.css?v=2014.11.02.1113')
+		//Support HTML5 elements in IE8/7
+		//[if lt IE 9]
+			<script>
+				document.createElement('header');
+				document.createElement('nav');
+				document.createElement('section');
+				document.createElement('article');
+				document.createElement('aside');
+				document.createElement('footer');
+			</script>
+		//[endif]
+		body.intro
+			div.main
+				section.splash
+					h1 Get your free prize
+					h2 but first you have to solve this puzzle...
+					.start-button Start
+				section.windows
+					.casement-window
+						img(src='/img/casement.png')
+					.jumble.touch
+						.letter(data-letter="S") S
+						.letter(data-letter="E") E
+						.letter(data-letter="N") N
+						.letter(data-letter="A") A
+						.letter.stamp(data-letter="M") M
+						.letter(data-letter="E") E
+						.letter(data-letter="C") C
+						.letter.stamp(data-letter="T") T
+					.legend window
+				.jumble-intro
+					.letter S
+					.letter E
+					.letter N
+					.letter M
+					.letter A
+					.letter E
+					.letter C
+					.letter.stamp T
+			div.wrap
+				header
+					.inner-header
+						h1
+							| The A Song A Month club
+							// <a class="about" href="#"><span class="asterisk">*</span>about</a>
+						form#mc-embedded-subscribe-form.validate(action='http://gregfriedmanmusic.us6.list-manage.com/subscribe/post?u=de9877d810cfc3628087ea12a&id=5efd15d5e6', method='post', name='mc-embedded-subscribe-form', target='_blank', novalidate='novalidate')
+							input#mce-EMAIL(type='text', name='EMAIL', placeholder='your@email.com')
+							a.sign-up-button(href='#') sign me up
+					nav
+						a(href='https://soundcloud.com/greg-friedman-music/sets/a-song-a-month')
+							span.icon-backward.prev-month
+						h2.month-name april
+						span.icon-forward.next-month
+				section.months
+					article.month.month-feb
+						.content
+							.player
+								img.song-cover(src='/img/me-me-me-500x500.jpg', alt='album cover')
+								.play-button
+									a.track.loading.action-indicator(href='http://soundcloud.com/greg-friedman-music/me-me-me')
+								.download-button
+									a(href='https://api.soundcloud.com/tracks/198823727/download?client_id=b45b1aa10f1ac2941910a7f0d10f8e28') Download this song
+							.song-info.group
+								.song-name Me Me Me
+								p.message
+									| Walk into a barbershop in the 1870’s in America and you would find crowds of men spontaneously breaking into song to pass the time while waiting for a shave and a cut. The barbershop was the community center and the barbershop quartet grew out of that camaraderie. Nowadays, if you walk into an American hair salon, you’ll find that people are still waiting for their haircuts. But now they're sitting silently, staring at an electronic device in their laps. If there is music, it’s playing through a wire into their ears for no one else to hear.
+								p.message
+									| What would it be like if the tradition of the barbershop quartet had lived on? If people passed their time together in song?
+								p.message
+									| So for Issue #27 of The A-Song-A-Month Club, I give you what I imagine a modern day barbershop quartet would sound like if four friends were at an electronic dance music festival singing to pass the time while waiting for the first DJ to start spinning.
+								p.message
+									| Love,
+									span.signature Greg
+						// end .content
+				footer
+					.content
+						.about
+							div Brought to you by 
+							a(href='http://www.gregfriedmanmusic.com') www.gregfriedmanmusic.com
+						.contact
+							| Contact:
+							a(href='mailto:greg@gregfriedmanmusic.com') email
+							| /
+							a(href='http://twitter.com/gregfriedman') twitter
+							| /
+							a(href='http://www.facebook.com/greg.s.friedman') facebook
+					// end .content
+				.overlay
+					.fade-out
+					.sign-up
+						h3 Thanks for listening
+						p.sign-up-message I write and record a new song every month 
+						p.sign-up-message and send it to all my subscribers for free! 
+						p.sign-up-call-to-action Enter your email address now to never miss an issue!
+							input.email-address( type='text', placeholder='e.g. franksinatra@gmail.com' )
+						a.sign-up-button(href="#") sign me up
+						a.sign-up-skip(href="#") I already signed up
+			script(src='/script/lib/respond.min.js')
+			script(src='/script/lib/soundmanager2-nodebug-jsmin.js')
+			script(data-main='/script/main' src='/script/lib/require.js')
