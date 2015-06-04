@@ -2,32 +2,39 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 	'use strict';
 
-	function Puzzle(word, scrambledWord, $introElement, $element) {
+	function Puzzle( word, $container, options ) {
+		
+		var options = options || {};
+		
 		this.word = word;
-		this.$introElement = $introElement;
-		this.$element = $element;
-
-		scrambledWord.split('').map(function (letter) {
+		this.$container = $container;
+		
+		this.$introContainer = options.$introContainer;
+		this.scrambledWord = options.scrambledWord;
+		
+		var puzzle = this;
+		
+		this.scrambledWord.split('').map(function (letter) {
 			$('<div></div>')
 				.addClass('letter')
 				.text(letter)
-				.appendTo($introElement);
+				.appendTo(puzzle.$introContainer);
 
 			$('<div></div>')
 				.addClass('letter')
 				.text(letter)
 				.attr('data-letter', letter)
-				.appendTo($element);
+				.appendTo(puzzle.$container);
 		});
 
 		// we want to demonstrate how letters are moved 
-		var $swapLetter = $('.letter:nth-child(5)', $introElement);
+		var $swapLetter = $('.letter:nth-child(5)', puzzle.$introContainer);
 		$swapLetter.insertBefore($swapLetter.prev());
 
 		// make some of the letters fixed in place to make jumble easier to solve
-		$('.letter:nth-child(5)', $element).addClass('stamp');
-		$('.letter', $element).last().addClass('stamp');
-		$('.letter', $introElement).last().addClass('stamp');
+		$('.letter:nth-child(5)', puzzle.$container).addClass('stamp');
+		$('.letter', puzzle.$container).last().addClass('stamp');
+		$('.letter', puzzle.$introContainer).last().addClass('stamp');
 	}
 
 	Puzzle.prototype.start = function () {
@@ -38,7 +45,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 		var puzzle = this;
 
-		$('.letter', puzzle.$introElement).each(function (index) {
+		$('.letter', puzzle.$introContainer).each(function (index) {
 			var baseDuration = 200;
 			var durationIncrement = 100;
 			var letterSpecificDuration = (index * durationIncrement);
@@ -57,7 +64,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 	}
 
 	Puzzle.prototype.checkAnswer = function () {
-		var $letters = $('.letter', this.$element);
+		var $letters = $('.letter', this.$container);
 
 		// sort the letters by their actual adjusted positions
 		$letters.sort(function (a, b) {
@@ -93,7 +100,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 	Puzzle.prototype._packLetters = function () {
 		var puzzle = this;
 
-		var $container = puzzle.$element;
+		var $container = puzzle.$container;
 		var letterWidth = $('.letter', $container).outerWidth();
 		var letterHeight = $('.letter', $container).outerHeight();
 
@@ -153,8 +160,8 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 	Puzzle.prototype._animateLettersGoHome = function () {
 		var puzzle = this;
-		var jumbleOffset = puzzle.$element.offset();
-		$('.letter', puzzle.$introElement).velocity({
+		var jumbleOffset = puzzle.$container.offset();
+		$('.letter', puzzle.$introContainer).velocity({
 			left: function (i) {
 				var letterWidth = 30 + 5;
 				return jumbleOffset.left + (i * letterWidth);
@@ -174,7 +181,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 	Puzzle.prototype._animateLettersSwap = function () {
 		var puzzle = this;
-		var $demoLetter = $('.letter:nth-child(4)', puzzle.$introElement),
+		var $demoLetter = $('.letter:nth-child(4)', puzzle.$introContainer),
 			letterWidth = 30 + 5,
 			letterHeight = 30 + 10;
 		$demoLetter.velocity({top: "-=" + letterHeight}, {
@@ -188,8 +195,8 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 					.velocity({top: "+=" + letterHeight}, {
 						complete: function () {
 							$(this).removeClass('is-dragging');
-							$('.letter', puzzle.$element).css({opacity: 1});
-							puzzle.$introElement.hide();
+							$('.letter', puzzle.$container).css({opacity: 1});
+							puzzle.$introContainer.hide();
 							var packedContainer = puzzle._packLetters();
 							packedContainer.stamp($('.stamp'));
 						}
