@@ -15,6 +15,8 @@ requirejs.config({
 
 requirejs(['jquery', 'puzzle'], function( $, Puzzle) {
 	
+	'use strict';
+	
 	$(function(){
 
 		//$('.puzzle-container').puzzle({

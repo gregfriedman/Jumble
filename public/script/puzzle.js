@@ -2,17 +2,17 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 	'use strict';
 
-	function Puzzle( word, scrambledWord, $introElement, $element ) {
+	function Puzzle(word, scrambledWord, $introElement, $element) {
 		this.word = word;
 		this.$introElement = $introElement;
 		this.$element = $element;
-		
-		scrambledWord.split('').map(function(letter) {
+
+		scrambledWord.split('').map(function (letter) {
 			$('<div></div>')
 				.addClass('letter')
 				.text(letter)
 				.appendTo($introElement);
-			
+
 			$('<div></div>')
 				.addClass('letter')
 				.text(letter)
@@ -24,9 +24,10 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 		var $swapLetter = $('.letter:nth-child(5)', $introElement);
 		$swapLetter.insertBefore($swapLetter.prev());
 
-		$('.letter', $introElement).last().addClass('stamp');
+		// make some of the letters fixed in place to make jumble easier to solve
 		$('.letter:nth-child(5)', $element).addClass('stamp');
 		$('.letter', $element).last().addClass('stamp');
+		$('.letter', $introElement).last().addClass('stamp');
 	}
 
 	Puzzle.prototype.start = function () {
@@ -36,10 +37,12 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 	Puzzle.prototype.sprayLetters = function () {
 
 		var puzzle = this;
-		
+
 		$('.letter', puzzle.$introElement).each(function (index) {
-			// TODO: magic numbers
-			var duration = Math.random() * 200 + (index * 100);
+			var baseDuration = 200;
+			var durationIncrement = 100;
+			var letterSpecificDuration = (index * durationIncrement);
+			var duration = Math.random() * baseDuration + letterSpecificDuration;
 			$(this)
 				.velocity(getFixedStartPosition($('.start-button')), {easing: "ease-in-out", duration: 50})
 				.velocity(getRandomEndPosition(), {
@@ -53,18 +56,17 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 		});
 	}
 
-	Puzzle.prototype.checkAnswer = function() {
+	Puzzle.prototype.checkAnswer = function () {
 		var $letters = $('.letter', this.$element);
 
+		// sort the letters by their actual adjusted positions
 		$letters.sort(function (a, b) {
 			return $(a).offset().left - $(b).offset().left
 		});
 
 		var spelledWord = $letters.map(function () {
 			return $(this).attr('data-letter');
-		})
-			.get()
-			.join('');
+		}).get().join('');
 
 		var wordToMatch = this.word;
 		if (spelledWord.toUpperCase() == wordToMatch.toUpperCase()) {
@@ -87,10 +89,10 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 				});
 		}
 	}
-	
-	Puzzle.prototype._packLetters = function() {
+
+	Puzzle.prototype._packLetters = function () {
 		var puzzle = this;
-		
+
 		var $container = puzzle.$element;
 		var letterWidth = $('.letter', $container).outerWidth();
 		var letterHeight = $('.letter', $container).outerHeight();
@@ -104,10 +106,10 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 		$container.find('.letter:not(.stamp)').each(function (i, itemElem) {
 			var draggie = new Draggabilly(itemElem);
 			draggie.on('dragStart', function () {
-				$('.jumble.touch').addClass('in-drag')
+				$container.addClass('in-drag')
 			});
 			draggie.on('dragEnd', function () {
-				$('.jumble.touch').removeClass('in-drag')
+				$container.removeClass('in-drag')
 			});
 			packedContainer.on('dragItemPositioned', function () {
 				puzzle.checkAnswer();
@@ -118,14 +120,14 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 
 		return packedContainer;
 	}
-	
-	Puzzle.prototype._getLetterCount = function() {
+
+	Puzzle.prototype._getLetterCount = function () {
 		return this.word.length;
 	}
 
-	Puzzle.prototype._animateWindowEnter = function() {
+	Puzzle.prototype._animateWindowEnter = function () {
 		var puzzle = this;
-		
+
 		$('.windows').velocity({left: [0, 2000]}, {
 			duration: 200, easing: "ease-in", complete: function () {
 				$('.casement-window')
@@ -149,12 +151,12 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 		});
 	};
 
-	Puzzle.prototype._animateLettersGoHome = function() {
+	Puzzle.prototype._animateLettersGoHome = function () {
 		var puzzle = this;
 		var jumbleOffset = puzzle.$element.offset();
 		$('.letter', puzzle.$introElement).velocity({
 			left: function (i) {
-				var letterWidth = 35;
+				var letterWidth = 30 + 5;
 				return jumbleOffset.left + (i * letterWidth);
 			},
 			top: function () {
@@ -170,7 +172,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 		});
 	}
 
-	Puzzle.prototype._animateLettersSwap = function() {
+	Puzzle.prototype._animateLettersSwap = function () {
 		var puzzle = this;
 		var $demoLetter = $('.letter:nth-child(4)', puzzle.$introElement),
 			letterWidth = 30 + 5,
@@ -188,7 +190,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 							$(this).removeClass('is-dragging');
 							$('.letter', puzzle.$element).css({opacity: 1});
 							puzzle.$introElement.hide();
-							var packedContainer  = puzzle._packLetters();
+							var packedContainer = puzzle._packLetters();
 							packedContainer.stamp($('.stamp'));
 						}
 					});
@@ -198,7 +200,7 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 			}
 		});
 	}
-	
+
 
 	function getFixedStartPosition($element) {
 		return {
@@ -212,8 +214,8 @@ define(['jquery', 'velocity', 'packery', 'draggabilly'], function ($, velocity, 
 	}
 
 	function getRandomEndPosition() {
-		var constrainedViewportWidth = $(window).width() - 200;// TODO: magic number
-		var constrainedViewportHeight = $(window).height() - 200;// TODO: magic number
+		var constrainedViewportWidth = $(window).width() - 200;
+		var constrainedViewportHeight = $(window).height() - 200;
 		return {
 			opacity: 1,
 			left: function () {
